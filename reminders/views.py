@@ -5,6 +5,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from .models import Appointment
 # Create your views here.
 
+
 class AppointmentListView(ListView):
     model = Appointment
 
@@ -25,7 +26,7 @@ class AppointmentDeleteView(DeleteView):
 
     model = Appointment
     success_url = reverse_lazy('list_appointments')
-    
+
 class AppointmentCreateView(SuccessMessageMixin, CreateView):
     """Powers a form to create a new appointment"""
 
