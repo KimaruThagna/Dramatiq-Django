@@ -123,12 +123,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-REDIS_LOCAL = env('REDIS_LOCAL')
+REDIS_LOCAL = 'localhost'
 
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.redis.RedisBroker",
     "OPTIONS": {
-        "url": 'redis://localhost:6379/0',
+        "url": f'redis://{REDIS_LOCAL}:6379/0',
     },
     "MIDDLEWARE": [
         "dramatiq.middleware.Prometheus",
