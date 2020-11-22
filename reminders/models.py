@@ -1,7 +1,7 @@
 from django.db import models
 from timezone_field import TimeZoneField
-
 import arrow
+
 # Create your models here.
 class Appointment(models.Model):
     name = models.CharField(max_length=150)
