@@ -1,7 +1,9 @@
 from django.db import models
 from timezone_field import TimeZoneField
+from django.core.exceptions import ValidationError
 from django.shortcuts import reverse
-import arrow
+import arrow, redis
+from django.conf import settings
 
 # Create your models here.
 class Appointment(models.Model):
@@ -37,34 +39,28 @@ class Appointment(models.Model):
         appointment_time = arrow.get(self.time, self.time_zone.zone)
         reminder_time = appointment_time.shift(minutes=-30)
         now = arrow.now(self.time_zone.zone)
-        milli_to_wait = int(
+        milliseconds_to_wait = int(
             (reminder_time - now).total_seconds()) * 1000
 
         # Schedule the Dramatiq task
         from .tasks import send_sms_reminder
         result = send_sms_reminder.send_with_options(
             args=(self.pk,),
-            delay=milli_to_wait)
+            delay=milliseconds_to_wait)
 
         return result.options['redis_message_id']
 
     def save(self, *args, **kwargs):
-        """Custom save method which also schedules a reminder"""
 
-        # Check if we have scheduled a reminder for this appointment before
         if self.task_id:
             # Revoke that task in case its time has changed
             self.cancel_task()
-
-        # Save our appointment, which populates self.pk,
-        # which is used in schedule_reminder
         super(Appointment, self).save(*args, **kwargs)
 
         # Schedule a new reminder task for this appointment
         self.task_id = self.schedule_reminder()
-
-        # Save our appointment again, with the new task_id
         super(Appointment, self).save(*args, **kwargs)
+
 
     def cancel_task(self):
         redis_client = redis.Redis(host=settings.REDIS_LOCAL, port=6379, db=0)

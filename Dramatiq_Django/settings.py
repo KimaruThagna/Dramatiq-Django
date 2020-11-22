@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'reminders',
+    'bootstrap3',
+    'django_forms_bootstrap',
+    'timezone_field'
 ]
 
 MIDDLEWARE = [
@@ -135,3 +138,4 @@ DRAMATIQ_BROKER = {
         "django_dramatiq.middleware.DbConnectionsMiddleware",
     ]
 }
+REMINDER_TIME = 30  # minutes
