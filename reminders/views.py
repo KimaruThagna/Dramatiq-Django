@@ -25,6 +25,7 @@ class AppointmentDeleteView(DeleteView):
 
     model = Appointment
     success_url = reverse_lazy('list_appointments')
+    
 class AppointmentCreateView(SuccessMessageMixin, CreateView):
     """Powers a form to create a new appointment"""
 

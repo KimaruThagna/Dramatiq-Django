@@ -19,4 +19,5 @@ from .views import *
 urlpatterns = [
     path('new', AppointmentCreateView.as_view(), name='new_appointment'),
     path('', AppointmentListView.as_view(), name='list_appointments'),
+    path(r'^/(?P[0-9]+)/delete$', AppointmentDeleteView.as_view(), name='delete_appointment'),
 ]
