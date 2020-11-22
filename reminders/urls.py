@@ -18,4 +18,5 @@ from django.urls import path
 from .views import *
 urlpatterns = [
     path('new', AppointmentCreateView.as_view(), name='new_appointment'),
+    path('', AppointmentListView.as_view(), name='list_appointments'),
 ]

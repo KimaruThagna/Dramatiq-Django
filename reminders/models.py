@@ -1,5 +1,6 @@
 from django.db import models
 from timezone_field import TimeZoneField
+from django.shortcuts import reverse
 import arrow
 
 # Create your models here.
@@ -15,3 +16,6 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f'Appointment #{self.pk} - {self.name}'
+
+    def get_absolute_url(self):
+        return reverse('reminders:view_appointment', args=[str(self.id)])
