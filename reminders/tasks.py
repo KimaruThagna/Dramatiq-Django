@@ -19,3 +19,4 @@ def send_sms_reminder(appointment_id):
     body = f'Hi {appointment.name}. You have an appointment coming up at {appointment.time.format("h:mm a")}.'
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     print(body)
+
