@@ -32,6 +32,18 @@ class Appointment(models.Model):
                 'You cannot schedule an appointment for the past. '
                 'Please check your time and time_zone')
 
+    def schedule_reminder_with_apscheduler(self):
+        """Schedule a Dramatiq task to send a reminder for this appointment"""
+
+        # Calculate the correct time to send this reminder
+        appointment_time = arrow.get(self.time, self.time_zone.zone)
+        reminder_time = appointment_time.shift(minutes=-30)
+
+        # Schedule the Dramatiq task
+        from .tasks import send_sms_from_apscheduler
+        result = ''
+
+
     def schedule_reminder(self):
         """Schedule a Dramatiq task to send a reminder for this appointment"""
 

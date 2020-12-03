@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
-import os
+import os, redis
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -123,12 +123,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-REDIS_LOCAL = 'localhost'
+DRAMATIQ_REDIS_URL = "redis://127.0.0.1:6379/0"
 
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.redis.RedisBroker",
     "OPTIONS": {
-        "url": f'redis://{REDIS_LOCAL}:6379/0',
+                "connection_pool": redis.ConnectionPool.from_url(DRAMATIQ_REDIS_URL),
     },
     "MIDDLEWARE": [
         "dramatiq.middleware.Prometheus",
