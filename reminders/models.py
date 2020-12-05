@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import reverse
 import arrow, redis
 from django.conf import settings
+from .scheduler import scheduler
+from datetime import datetime
 
 # Create your models here.
 class Appointment(models.Model):
@@ -41,7 +43,10 @@ class Appointment(models.Model):
 
         # Schedule the Dramatiq task
         from .tasks import send_sms_from_apscheduler
-        result = ''
+        scheduler.add_job(send_sms_from_apscheduler, 'date',
+                          run_date=datetime.strptime(reminder_time.format('YYYY-MM-DD HH:mm ZZ'),'%Y-%m-%d %H:%M %z')
+                          ,args=[self.id])
+        return reminder_time.format('YYYY-MM-DD HH:mm ZZ')
 
 
     def schedule_reminder(self):
@@ -70,7 +75,7 @@ class Appointment(models.Model):
         super(Appointment, self).save(*args, **kwargs)
 
         # Schedule a new reminder task for this appointment
-        self.task_id = self.schedule_reminder()
+        self.task_id = self.schedule_reminder_with_apscheduler()
         super(Appointment, self).save(*args, **kwargs)
 
 

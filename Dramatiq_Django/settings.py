@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'reminders',
     'bootstrap3',
     'django_forms_bootstrap',
-    'timezone_field'
+    'timezone_field',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +142,15 @@ DRAMATIQ_BROKER = {
     ]
 }
 REMINDER_TIME = 30  # minutes
+# This scheduler config will:
+# - Store jobs in the project database
+# - Execute jobs in threads inside the application process
+SCHEDULER_CONFIG = {
+    "apscheduler.jobstores.default": {
+        "class": "django_apscheduler.jobstores:DjangoJobStore"
+    },
+    'apscheduler.executors.processpool': {
+        "type": "threadpool"
+    },
+}
+SCHEDULER_AUTOSTART = True
