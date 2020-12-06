@@ -1,19 +1,18 @@
-import logging
+import logging, sys
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.executors.pool import ProcessPoolExecutor, ThreadPoolExecutor
 from django_apscheduler.jobstores import register_events, register_job
 
 from django.conf import settings
 
 # Create scheduler to run in a thread inside the application process
-scheduler = BackgroundScheduler(settings.SCHEDULER_CONFIG)
+scheduler = BackgroundScheduler()
 
 def start():
-    if settings.DEBUG:
-      	# Hook into the apscheduler logger
-        logging.basicConfig()
-        logging.getLogger('apscheduler').setLevel(logging.DEBUG)
+    # if settings.DEBUG:
+    #   	# Hook into the apscheduler logger
+    #     logging.basicConfig()
+    #     logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
     # Adding this job here instead of to crons.
     # This will do the following:
@@ -23,6 +22,5 @@ def start():
     #scheduler.add_job("core.models.MyModel.my_class_method", "cron", id="my_class_method", hour=0, replace_existing=True)
     scheduler.add_job(lambda: scheduler.print_jobs(), 'interval', seconds=5)
     # Add the scheduled jobs to the Django admin interface
-    register_events(scheduler)
 
     scheduler.start()
